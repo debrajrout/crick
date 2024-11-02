@@ -31,6 +31,11 @@ const userSchema = new Schema({
 
         trim: true,
     },
+    firebaseUid: {
+        type: String,
+        required: true,
+        unique: true
+    },
     mobileNumber: {
         type: String,
         required: true,
@@ -62,7 +67,7 @@ const userSchema = new Schema({
         }
     ],
 }, {
-    timestamps: true, // Automatically adds createdAt and updatedAt fields
+    timestamps: true,
 });
 
 // Method to calculate attendance percentage for a specific month
