@@ -28,7 +28,6 @@ const attendanceSchema = new Schema({
 const userSchema = new Schema({
     name: {
         type: String,
-
         trim: true,
     },
     firebaseUid: {
