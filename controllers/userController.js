@@ -2,7 +2,14 @@ const User = require('../models/User');
 
 // Create a new user
 exports.createUser = async (req, res) => {
-    const { firebaseUid, name, mobileNumber, gender } = req.body;
+    // Destructure the request body with default values
+    const {
+        firebaseUid,
+        name = "Default Name",
+        mobileNumber = "0000000000",
+        gender = "Unknown",
+        email = "default@example.com"
+    } = req.body;
 
     try {
         // Check if user already exists
@@ -17,6 +24,7 @@ exports.createUser = async (req, res) => {
             name,
             mobileNumber,
             gender,
+            email,
         });
 
         await newUser.save();

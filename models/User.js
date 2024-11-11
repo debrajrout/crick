@@ -35,11 +35,27 @@ const userSchema = new Schema({
         required: true,
         unique: true
     },
+    weight: {
+        type: Number,
+    },
+    height: {
+        type: Number,
+    },
+    birthDate: {
+        type: Date,
+    },
     mobileNumber: {
         type: String,
-        required: true,
         unique: true,
         trim: true,
+    },
+    email: {
+        type: String,
+        unique: true,
+    },
+    batch: {
+        type: Schema.Types.ObjectId,
+        ref: 'Batch',  // Use the name of the model as a string
     },
     gender: {
         type: String,
@@ -55,7 +71,6 @@ const userSchema = new Schema({
             result: {
                 type: String,
                 enum: ['Win', 'Lose'],
-
             },
         }
     ],
