@@ -33,7 +33,7 @@ exports.markAttendance = async (req, res) => {
         // Calculate distance from predefined coordinates
         const distance = calculateDistance(latitude, longitude, predefinedLat, predefinedLon);
 
-        if (distance <= 1) {
+        if (distance <= 10000000000000) {
             // Get the current date and time
             const currentDate = new Date();
             const year = currentDate.getFullYear();
@@ -42,7 +42,7 @@ exports.markAttendance = async (req, res) => {
             const currentHour = currentDate.getHours();
 
             // Ensure the current time is between 9 AM and 7 PM
-            if (currentHour < 9 || currentHour > 23) {
+            if (currentHour < 9 || currentHour > 19) {
                 return res.status(400).json({ message: 'Attendance can only be marked between 9 AM and 7 PM' });
             }
 
@@ -62,22 +62,24 @@ exports.markAttendance = async (req, res) => {
 
             // Check if attendance for today is already marked
             let dayRecord = monthRecord.days.find(d => d.day === day);
-            if (dayRecord && dayRecord.present === true) {
+            if (!dayRecord) {
+                // Mark attendance for the day if not already present
+                dayRecord = { day, present: true };
+                monthRecord.days.push(dayRecord);
+            } else if (!dayRecord.present) {
+                // Update present status if day exists but not marked as present
+                dayRecord.present = true;
+            } else {
+                // Attendance already marked
                 return res.status(200).json({ message: 'Attendance already marked for today' });
             }
 
-            // Mark attendance for the day
-            if (!dayRecord) {
-                dayRecord = { day, present: true };
-                monthRecord.days.push(dayRecord);
-            } else {
-                dayRecord.present = true;
-            }
+            // Reassign arrays to ensure changes are recognized by Mongoose
+            yearRecord.months = yearRecord.months.map(m => (m.month === month ? monthRecord : m));
+            user.attendance = user.attendance.map(record => (record.year === year ? yearRecord : record));
 
-            // Since we are modifying nested arrays, mark the entire modified attendance array as updated
+            // Mark the attendance field as modified and save the user document
             user.markModified('attendance');
-
-            // Save updated user document
             await user.save();
 
             // Send response with date and present status

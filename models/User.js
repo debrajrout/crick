@@ -61,6 +61,11 @@ const userSchema = new Schema({
         type: String,
         enum: ['Male', 'Female', 'Other'],
     },
+    role: {
+        type: String,
+        enum: ['Admin', 'Player', 'Coach'],
+        default: 'Player',
+    },
     attendance: [attendanceSchema],
     playedMatches: [
         {
@@ -84,19 +89,6 @@ const userSchema = new Schema({
     timestamps: true,
 });
 
-// Method to calculate attendance percentage for a specific month
-userSchema.methods.getAttendancePercentage = function (year, month) {
-    const yearRecord = this.attendance.find(record => record.year === year);
-    if (!yearRecord) return 0;
-
-    const monthRecord = yearRecord.months.find(m => m.month === month);
-    if (!monthRecord) return 0;
-
-    const totalDays = monthRecord.days.length;
-    const presentDays = monthRecord.days.filter(day => day.present).length;
-
-    return totalDays ? (presentDays / totalDays) * 100 : 0;
-};
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;
