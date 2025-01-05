@@ -1,4 +1,3 @@
-// models/Batch.js
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -26,7 +25,18 @@ const batchSchema = new Schema({
         unique: true,
         trim: true,
     },
-    subBatches: [subBatchSchema], // Array of sub-batches
+    description: {
+        type: String,
+        required: false,
+        trim: true,
+        maxlength: 500,
+    },
+    subBatches: [subBatchSchema],
+    creatorId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    }
 }, {
     timestamps: true,
 });

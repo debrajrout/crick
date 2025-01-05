@@ -1,12 +1,12 @@
 const User = require('../models/User');
 
-// Get user details by firebaseUid
-exports.getUserByFirebaseUid = async (req, res) => {
-    const { firebaseUid } = req.params;
+// Get user details by _id
+exports.getUserById = async (req, res) => {
+    const { id } = req.params;
 
     try {
-        // Find the user by firebaseUid
-        const user = await User.findOne({ firebaseUid })
+        // Find the user by _id
+        const user = await User.findById(id);
 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });

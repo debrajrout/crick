@@ -1,12 +1,12 @@
 const Batch = require('../models/Batch'); // Import the Batch model
-const User = require('../models/User');  // Import the User model (if needed to reference users)
+const User = require('../models/User'); // Import the User model (if needed to reference users)
 
 const createBatch = async (req, res) => {
-    const { name, subBatches } = req.body;
+    const { name, subBatches, creatorId, description } = req.body; // Added creatorId and description to the request body
 
     // Check if the required fields are provided
-    if (!name || !subBatches || !Array.isArray(subBatches)) {
-        return res.status(400).json({ error: 'Batch name and sub-batches are required' });
+    if (!name || !subBatches || !Array.isArray(subBatches) || !creatorId) {
+        return res.status(400).json({ error: 'Batch name, sub-batches, and creator are required' });
     }
 
     // Ensure each sub-batch has a name and users
@@ -17,19 +17,28 @@ const createBatch = async (req, res) => {
     }
 
     try {
-        // Create a new batch with sub-batches
+        // Check if the creator (user) exists in the User model
+        const creator = await User.findById(creatorId);
+        if (!creator) {
+            return res.status(404).json({ error: 'Creator not found' });
+        }
+
+        // Create a new batch with sub-batches, description, and creatorId
         const newBatch = new Batch({
             name,
+            description,  // Add description to the batch (optional)
             subBatches: subBatches.map(subBatch => ({
                 name: subBatch.name,
                 users: subBatch.users,  // Array of user IDs
             })),
+            creatorId,  // Set the creatorId field to the provided user ID
         });
 
         // Save the batch to the database
         await newBatch.save();
 
         return res.status(201).json({
+            success: true,
             message: 'Batch created successfully!',
             batch: newBatch,
         });

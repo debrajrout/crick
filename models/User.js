@@ -55,7 +55,7 @@ const userSchema = new Schema({
     },
     batch: {
         type: Schema.Types.ObjectId,
-        ref: 'Batch',  // Use the name of the model as a string
+        ref: 'Batch',
     },
     gender: {
         type: String,
@@ -65,6 +65,10 @@ const userSchema = new Schema({
         type: String,
         enum: ['Admin', 'Player', 'Coach'],
         default: 'Player',
+    },
+    playerType: {
+        type: String,
+        enum: ['Batsman', 'Bowler', 'Wicketkeeper', 'Allrounder'],
     },
     attendance: [attendanceSchema],
     playedMatches: [
@@ -88,7 +92,6 @@ const userSchema = new Schema({
 }, {
     timestamps: true,
 });
-
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;
