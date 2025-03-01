@@ -6,7 +6,7 @@ exports.createUser = async (req, res) => {
     const {
         firebaseUid,
         name = "Default Name",
-        mobileNumber = "0000000000",
+        mobileNumber = "",
         gender = "Unknown",
         email = "default@example.com"
     } = req.body;

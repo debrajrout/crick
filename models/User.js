@@ -46,7 +46,7 @@ const userSchema = new Schema({
     },
     mobileNumber: {
         type: String,
-        unique: true,
+        // unique: true,
         trim: true,
     },
     email: {
