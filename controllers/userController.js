@@ -2,14 +2,19 @@ const User = require('../models/User');
 
 // Create a new user
 exports.createUser = async (req, res) => {
-    // Destructure the request body with default values
+    // Destructure the request body with only the essential fields from Firebase phone auth
     const {
         firebaseUid,
-        name = "Default Name",
-        mobileNumber = "",
-        gender = "Unknown",
-        email = "default@example.com"
+        mobileNumber,
+        name,        // Optional, no default
+        gender,      // Optional, no default
+        email        // Optional, no default
     } = req.body;
+
+    // Validate required fields
+    if (!firebaseUid || !mobileNumber) {
+        return res.status(400).json({ error: 'Firebase UID and mobile number are required' });
+    }
 
     try {
         // Check if user already exists
@@ -18,13 +23,13 @@ exports.createUser = async (req, res) => {
             return res.status(400).json({ error: 'User already exists' });
         }
 
-        // Create a new user
+        // Create a new user with only provided fields
         const newUser = new User({
             firebaseUid,
-            name,
             mobileNumber,
-            gender,
-            email,
+            ...(name && { name }),       // Include only if provided
+            ...(gender && { gender }),   // Include only if provided
+            ...(email && { email })      // Include only if provided
         });
 
         await newUser.save();
