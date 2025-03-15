@@ -41,6 +41,35 @@ const userSchema = new Schema({
     height: {
         type: Number,
     },
+
+    education: {
+        type: String,
+    },
+    referance: {
+        type: String,
+    },
+
+    disease: {
+        type: String,
+    },
+
+    injury: {
+        type: String,
+    },
+
+    parrentName: {
+        type: String,
+    },
+    occupation: {
+        type: String,
+    },
+    address: {
+        type: String,
+    },
+    remark: {
+        type: String,
+    },
+
     birthDate: {
         type: Date,
     },
